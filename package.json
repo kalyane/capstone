@@ -1,4 +1,7 @@
 {
+  "name": "imagine-dungeons",
+  "version": "1.0.0",
+  "author": "Kalyane de Oliveira Bezerra kalyane@uni.minerva.edu>",
   "repository": "#",
   "license": "UNLICENSED",
   "scripts": {
