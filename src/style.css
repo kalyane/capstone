@@ -12,8 +12,61 @@ body
 
 .webgl
 {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     outline: none;
 }
+
+#allModels{
+    position: fixed;
+    top: 0%;
+    right: 0%;
+
+    width: 20%;
+    min-width: 200px;
+    height: 100%;
+
+    background-color:darkcyan;
+}
+
+#modelSettings{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+
+    width: 20%;
+    min-width: 200px;
+    height: 100%;
+
+    background-color:darkcyan;
+}
+
+#gameModels{
+    position: absolute;
+    bottom: 0%;
+    right: 50%;
+    -webkit-transform: translate(50%, 0);
+    transform: translate(50%, 0);
+
+    width: 100%;
+    max-width: min(calc(100% - 400px), 60%);
+    height: 30%;
+
+    background-color: gray;
+}
+
+
+#play{
+    position: fixed;
+    top: 0%;
+    right: 30%;
+    padding: 10px;
+    margin: 10px;
+}
+
+.asset{
+    margin: 10px;
+    padding: 10px;
+}
+

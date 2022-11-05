@@ -63,17 +63,6 @@ export default class Resources extends EventEmitter
                     }
                 )
             }
-            else if(source.type === 'fbxModel')
-            {
-                // considers first element being the model
-                this.loaders.fbxLoader.load(
-                    source.path,
-                    (file) =>
-                    {
-                        this.sourceLoaded(source, file)
-                    }
-                )
-            }
         }
     }
 

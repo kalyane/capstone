@@ -1,147 +1,89 @@
 import * as THREE from 'three'
-import Experience from '../Experience.js'
-import EventEmitter from '../Utils/EventEmitter.js'
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js'
+import Character from './Character.js'
+import KeyboardInput from '../Utils/KeyboardInput.js'
 
-export default class Warrior extends EventEmitter
+export default class Warrior extends Character
 {
-    constructor()
+    constructor(name)
     {
-        super()
+        super('warriorModel', name)
+        this.setControl(new KeyboardInput())
 
-        this.experience = new Experience()
-        this.scene = this.experience.scene
-        this.resources = this.experience.resources
-        this.time = this.experience.time
-        this.debug = this.experience.debug
-        this.input = this.experience.input
+        this.preSetModel()
 
-        // Resource
-        this.resource = this.resources.items.warriorModel
+        // set animations in the right order
+        this.setAnimation(
+            this.resource.animations[1], // idle
+            this.resource.animations[6], // walk
+            this.resource.animations[4], // attack
+            this.resource.animations[0] // death
+        )
 
-        this.setModel()
-        this.setAnimation()
-
-        this.trigger("ready")
-
-        // 
-        this.distance = 0.1
-        this.rotation = 0.1
-
-        // key pressed
-        this.input.on('keyDown', () =>
+        this.control.on('newState', () =>
         {
-            this.setState()
-        })
-
-        // key released
-        this.input.on('keyUp', () =>
-        {
-            this.setState()
-        })
-    }
-
-    setState()
-    {
-        const nothingPressed = Object.values(this.input.keys).every(
-            value => value === false
-        );
-
-        if (nothingPressed) {
-            this.playAnimation("idle")
-        }
-        if (this.input.keys.left){
-            this.playAnimation("idle")
-            this.model.rotation.y += this.rotation
-        }
-        if (this.input.keys.right){
-            this.playAnimation("idle")
-            this.model.rotation.y -= this.rotation
-        }
-        if (this.input.keys.forward){
-            this.playAnimation("walk")
-
-            let position = new THREE.Vector3(0, 0, this.distance);
-
-            position.applyQuaternion(this.model.quaternion);
-            position.normalize();
-            position.add(this.model.position)
-
-            this.model.position.copy(position)
-        }
-        if (this.input.keys.backward){
-            this.playAnimation("walk")
-            let position = new THREE.Vector3(0, 0, -this.distance);
-
-            position.applyQuaternion(this.model.quaternion);
-            position.normalize();
-            position.add(this.model.position)
-
-            this.model.position.copy(position)
-        }
-        if (this.input.keys.space){
-            this.playAnimation("slash")
-        }
-    }
-
-    setModel()
-    {
-        this.model = this.resource.scene
-        //this.model.scale.set(0.02, 0.02, 0.02)
-        this.scene.add(this.model)
-
-        this.model.traverse((child) =>
-        {
-            if(child instanceof THREE.Mesh)
-            {
-                child.castShadow = true
+            if (this.experience.world.playing && this.life>0){
+                this.updateState()
             }
         })
+
+        this.attackPower = 50
     }
 
-    async setAnimation()
-    {
-        this.animation = {}
-        
-        // Mixer
-        this.animation.mixer = new THREE.AnimationMixer(this.model)
-        
-        // Actions
-        this.animation.actions = {}
-        
-        this.animation.actions.death = this.animation.mixer.clipAction(this.resource.animations[0])
-        this.animation.actions.idle = this.animation.mixer.clipAction(this.resource.animations[1])
-        this.animation.actions.impact = this.animation.mixer.clipAction(this.resource.animations[2])
-        this.animation.actions.run = this.animation.mixer.clipAction(this.resource.animations[3])
-        this.animation.actions.slash = this.animation.mixer.clipAction(this.resource.animations[4])
-        this.animation.actions.walk = this.animation.mixer.clipAction(this.resource.animations[6])
-        
-        //console.log(this.animation.actions.idle)
+    preSetModel(){
+        // creates a copy of the original model
+        const originalModel = this.resource.scene
+        this.model = SkeletonUtils.clone( originalModel )
+        this.model.scale.set(2, 2, 2)
 
-        this.animation.actions.current = this.animation.actions.run
-        this.animation.actions.current.play()
-        //const delay = ms => new Promise(res => setTimeout(res, ms));
-        //await delay(5000);
-        
+        // add sword to player
+        const rightHand = this.model.getObjectByName("mixamorigRightHand")
+
+        this.sword = this.resources.items.swordModel.scene
+        this.sword.scale.set(20, 20, 20)
+        this.sword.rotation.set(0, 0, - Math.PI / 4 )
+        rightHand.add(this.sword)
+
+        // creates a box to cover the model
+        const boxGeo = new THREE.BoxGeometry(2, 4, 2)
+        boxGeo.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 2, 0 ) )
+        this.modelDragBox = new THREE.Mesh(
+            boxGeo,
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+        )
+        this.modelDragBox.geometry.computeBoundingBox()
+
+        this.setModel()
     }
 
-    // Play the action
-    playAnimation(name)
+    checkCollisions()
     {
-        const newAction = this.animation.actions[name]
-        const oldAction = this.animation.actions.current
+        //this.box.update()
+        
+        //this.warriorBox.copy(this.box.geometry.boundingBox).applyMatrix4(this.model.matrixWorld)
 
-        if (newAction != oldAction){
-            newAction.reset()
-            newAction.play()
-            newAction.crossFadeFrom(oldAction, 1)
+        //console.log("warrior", this.warriorBox)
+        //console.log("zombie", this.experience.world.zombie.zombieBox)
 
-            this.animation.actions.current = newAction
+        
+        //mesh.userData.obb.copy(mesh.geometry.userData.obbw)
+        //mesh.userData.obb.applyMatrix4(mesh.matrixWorld)
+
+        let modelBox = new THREE.Box3();
+        modelBox.copy(this.modelDragBox.geometry.boundingBox);
+        modelBox.applyMatrix4(this.modelDragBox.matrixWorld);
+
+        for (var key in this.experience.world.dictModels){
+            var otherModel = this.experience.world.dictModels[key]
+            let otherBox = new THREE.Box3();
+            otherBox.copy(otherModel.modelDragBox.geometry.boundingBox);
+            otherBox.applyMatrix4(otherModel.modelDragBox.matrixWorld);
+            if (otherModel.name != this.name && modelBox.intersectsBox(otherBox)){
+                //this.playAnimation("death")
+                //console.log("death")
+                return true
+            }
         }
-        
-    }
-
-    update()
-    {
-        this.animation.mixer.update(this.time.delta * 0.001)
+        return false
     }
 }

@@ -20,7 +20,8 @@ export default class KeyboardInput extends EventEmitter
     }
 
     onKeyDown(event) {
-        switch (event.keyCode) {
+        let code = event.keyCode || event.which
+        switch (code) {
           case 87: // w
             this.keys.forward = true;
             break;
@@ -68,5 +69,7 @@ export default class KeyboardInput extends EventEmitter
 
         this.trigger('keyUp')
     }
+    update(){
 
+    }
 }

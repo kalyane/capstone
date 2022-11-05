@@ -7,5 +7,28 @@
 </head>
 <body>
     <canvas class="webgl"></canvas>
+
+    <div id="modelSettings">
+        <h3>Model Settings</h3>
+        <label for="name" class="form-label">NAME</label>
+        <input type="text" id="name">
+        <button id="turn">TURN 90 degrees</button>
+        <button id="delete">DELETE</button>
+    </div>
+    
+    <div id="gameModels">
+        <button class="asset" model="fox">Something</button>
+    </div>
+
+    <div id="allModels">
+        <h3>Click to add model</h3>
+        <button class="asset" model="wall">Wall</button>
+        <button class="asset" model="fox">Fox</button>
+        <button class="asset" model="warrior">Warrior</button>
+        <button class="asset" model="zombie">Zombie</button>
+    </div>
+
+    <button id="play">PLAY</button>
+
 </body>
 </html>

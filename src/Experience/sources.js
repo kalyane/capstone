@@ -31,5 +31,23 @@ export default [
         name: 'warriorModel',
         type: 'gltfModel',
         path: 'models/Warrior/warrior_good.glb'
+    },
+    {
+        name: 'swordModel',
+        type: 'gltfModel',
+        path: 'models/Weapons/Sword.glb'
+    },
+    {
+        name: 'zombieModel',
+        type: 'gltfModel',
+        path: 'models/Zombie/zombie.glb'
+    },
+    {
+        name: 'wallModel',
+        type: 'gltfModel',
+        path: 'models/Wall/wall.glb'
     }
 ]
+
+//https://mrscientist.itch.io/3d-low-poly-modular-dungeon
+//https://opengameart.org/content/lowpoly-rpg-characters

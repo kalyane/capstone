@@ -11,18 +11,20 @@ export default class Camera
         this.scene = this.experience.scene
         this.canvas = this.experience.canvas
         this.resources = this.experience.resources
+        // TODO: need to change size camera when playing to fixed
+        this.gameRatio = 16/9
         
         this.currentPosition = new THREE.Vector3()
         this.currentLookat = new THREE.Vector3()
 
         this.setInstance()
-        //this.setControls()
+        this.setControls()
     }
 
     setInstance()
     {
-        this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.instance.position.set(6, 4, 8)
+        this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 1000)
+        this.instance.position.set(30, 30, 30)
         this.scene.add(this.instance)
     }
 
@@ -69,12 +71,10 @@ export default class Camera
 
     update()
     {
-        //this.instance.lookAt(new THREE.Vector3(0,0,0))
-        if (this.experience.world && this.experience.world.warrior && this.experience.world.warrior.model){
-            this.player = this.experience.world.warrior.model
+        if (this.experience.world.playing){
+            this.player = this.experience.world.player.model
             this.followPlayer()
-        }
-        if (this.controls){
+        } else {
             this.controls.update()
         }
     }

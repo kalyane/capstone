@@ -1,15 +1,18 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js'
+
 
 export default class Fox
 {
-    constructor()
+    constructor(name)
     {
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.resources = this.experience.resources
         this.time = this.experience.time
         this.debug = this.experience.debug
+        this.name = name
 
         // Debug
         if(this.debug.active)
@@ -26,17 +29,38 @@ export default class Fox
 
     setModel()
     {
-        this.model = this.resource.scene
-        this.model.scale.set(0.02, 0.02, 0.02)
+        const originalModel = this.resource.scene
+        this.model = SkeletonUtils.clone( originalModel );
+
+        this.model.scale.set(0.04, 0.04, 0.04)
+        this.model.userData = this.name
         this.scene.add(this.model)
 
         this.model.traverse((child) =>
         {
+            if (child instanceof THREE.Group) {
+                this.modelGroup = child
+            }
             if(child instanceof THREE.Mesh)
             {
                 child.castShadow = true
             }
         })
+
+        const boxGeo = new THREE.BoxGeometry(1, 3, 5)
+        boxGeo.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 1.5, 0 ) )
+
+        this.modelDragBox = new THREE.Mesh(
+            boxGeo,
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+        )
+        this.modelDragBox.userData = this.name
+        this.scene.add(this.modelDragBox)
+
+        this.boxHelper = new THREE.BoxHelper(this.modelDragBox, 0xffff00)
+        this.boxHelper.visible = false
+        this.boxHelper.userData = this.name
+        this.scene.add(this.boxHelper)
     }
 
     setAnimation()
@@ -53,7 +77,7 @@ export default class Fox
         this.animation.actions.walking = this.animation.mixer.clipAction(this.resource.animations[1])
         this.animation.actions.running = this.animation.mixer.clipAction(this.resource.animations[2])
 
-        console.log("fox",this.animation.actions.idle)
+        //console.log("fox",this.animation.actions.idle)
         
         this.animation.actions.current = this.animation.actions.idle
         this.animation.actions.current.play()
@@ -88,5 +112,15 @@ export default class Fox
     update()
     {
         this.animation.mixer.update(this.time.delta * 0.001)
+        this.modelGroup.position.copy(this.modelDragBox.position)
+        this.modelGroup.rotation.copy(this.modelDragBox.rotation)
+        this.boxHelper.update()
+    }
+
+    delete()
+    {
+        this.scene.remove(this.model)
+        this.scene.remove(this.modelDragBox)
+        this.scene.remove(this.boxHelper)
     }
 }
