@@ -3,12 +3,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import EventEmitter from './EventEmitter.js'
 
+/**
+ * Loads all resources
+ */
 export default class Resources extends EventEmitter
 {
     constructor(sources)
     {
         super()
-
+        // get list of sources
         this.sources = sources
 
         this.items = {}
@@ -65,7 +68,11 @@ export default class Resources extends EventEmitter
             }
         }
     }
-
+    /**
+     * Keeps track of files loaded and triggers ready when loaded all
+     * @param {*} source 
+     * @param {*} file 
+     */
     sourceLoaded(source, file)
     {
         this.items[source.name] = file

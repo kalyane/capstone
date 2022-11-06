@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
 
+// still needs to figure how a dungeon environment is
 export default class Environment
 {
     constructor()

@@ -55,24 +55,6 @@ export default class World extends EventEmitter
             this.scene.add(ground)
             ground.receiveShadow = true
 
-            // CUBE
-            this.cubes = new THREE.Group()
-
-            const cGeometry = new THREE.BoxGeometry(10,10,10)
-            const cMaterial = new THREE.MeshStandardMaterial( { color: 0x00ffff} )
-            const cube = new THREE.Mesh(cGeometry, cMaterial)
-
-            cube.position.set(10, 5, 10)
-
-            cube.castShadow = true
-            cube.receiveShadow = true
-            
-            //this.cubes.add(cube)
-            //this.scene.add(this.cubes)
-            //const obj = this.resources.items.foxModel.scene
-            //obj.scale.set(0.02, 0.02, 0.02)
-            //this.scene.add(obj)
-
             const dControls = new DragControls(this.objects, this.experience.camera.instance, this.experience.canvas)
             
 

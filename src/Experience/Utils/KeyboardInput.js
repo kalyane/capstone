@@ -1,5 +1,8 @@
 import EventEmitter from './EventEmitter.js'
 
+/**
+ * class used to get keyboard input and translate into the game keys
+ */
 export default class KeyboardInput extends EventEmitter
 {
     constructor()
@@ -15,6 +18,7 @@ export default class KeyboardInput extends EventEmitter
             shift: false
         }
 
+        // check if key was pressed or released
         document.addEventListener('keydown', (e) => this.onKeyDown(e), false);
         document.addEventListener('keyup', (e) => this.onKeyUp(e), false);
     }

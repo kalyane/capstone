@@ -22,6 +22,7 @@ export default class CharacterControl extends EventEmitter
             this.setState()
         })
 
+        // dict of states and their game representation
         this.states = {
             'idle': {
                 'animation':'idle', 
@@ -60,6 +61,7 @@ export default class CharacterControl extends EventEmitter
     {
         var newState = this.getNewState()
 
+        // if there is a new state, trigger character to change state
         if (newState != this.currentState){
             this.currentState = newState
             this.trigger('newState')

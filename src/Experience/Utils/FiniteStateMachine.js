@@ -1,3 +1,4 @@
+// class not yet, still thinking on how to implement
 export default class FiniteStateMachine
 {
     constructor()

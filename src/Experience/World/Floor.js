@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
 
+// not used anymore, but keep for reference
 export default class Floor
 {
     constructor()

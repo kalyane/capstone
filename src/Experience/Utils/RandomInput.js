@@ -1,6 +1,9 @@
 import EventEmitter from './EventEmitter.js'
 import Experience from '../Experience.js'
 
+/**
+ * Class generates random input of keys to character
+ */
 export default class RandomInput extends EventEmitter
 {
     constructor(character)
